@@ -1,24 +1,4 @@
 
-# Binaries for programs and plugins
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
-
-# Test binary, built with `go test -c`
-*.test
-
-# Output of the go coverage tool, specifically when run with the -o flag
-*.out
-
-# Dependency directories (remove the comment below to include it)
-# vendor/
-
-# Environment variables
+credentials.json
+token.json
 .env
-.env*
-
-# OS-specific files
-.DS_Store
-Thumbs.db

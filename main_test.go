@@ -1,90 +1,72 @@
-// Copyright 2023 The Go Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
 
 package main
 
 import (
+	"context"
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
-	"sync/atomic"
 	"testing"
-	"time"
+
+	"github.com/google/generative-ai-go/genai"
+	"google.golang.org/api/option"
+	"google.golang.org/api/youtube/v3"
 )
 
-// statusHandler is an http.Handler that writes an empty response using a
-// status code that can be updated atomically.
-type statusHandler struct {
-	code int32
-}
-
-func (h *statusHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(int(atomic.LoadInt32(&h.code)))
-}
-
-func TestIsTagged(t *testing.T) {
-	// Set up a fake "Google Code" web server reporting 404 not found.
-	status := statusHandler{code: http.StatusNotFound}
-	s := httptest.NewServer(&status)
-	defer s.Close()
-
-	if isTagged(s.URL) {
-		t.Fatal("isTagged == true, want false")
+// TestTutorHandler tests the /api/tutor endpoint.
+func TestTutorHandler(t *testing.T) {
+	geminiAPIKey := os.Getenv("GEMINI_API_KEY")
+	if geminiAPIKey == "" {
+		t.Skip("GEMINI_API_KEY not set, skipping tutor handler test")
 	}
 
-	// Change fake server status to 200 OK and try again.
-	atomic.StoreInt32(&status.code, http.StatusOK)
-
-	if !isTagged(s.URL) {
-		t.Fatal("isTagged == false, want true")
-	}
-}
-
-func TestIntegration(t *testing.T) {
-	status := statusHandler{code: http.StatusNotFound}
-	ts := httptest.NewServer(&status)
-	defer ts.Close()
-
-	// Replace the pollSleep with a closure that we can block and unblock.
-	sleep := make(chan bool)
-	pollSleep = func(time.Duration) {
-		sleep <- true
-		sleep <- true
+	ctx := context.Background()
+	genaiClient, err := genai.NewClient(ctx, option.WithAPIKey(geminiAPIKey))
+	if err != nil {
+		t.Fatalf("Failed to create GenAI client: %v", err)
 	}
 
-	// Replace pollDone with a closure that will tell us when the poller is
-	// exiting.
-	done := make(chan bool)
-	pollDone = func() { done <- true }
+	model := genaiClient.GenerativeModel("gemini-pro")
 
-	// Put things as they were when the test finishes.
-	defer func() {
-		pollSleep = time.Sleep
-		pollDone = func() {}
-	}()
+	h := handleTutorRequest(model, ctx)
 
-	s := NewServer("1.x", ts.URL, 1*time.Millisecond)
-
-	<-sleep // Wait for poll loop to start sleeping.
-
-	// Make first request to the server.
-	r, _ := http.NewRequest("GET", "/", nil)
+	// Create a mock request
+	reqBody := TutorRequest{Prompt: "testing prompt"}
+	body, _ := json.Marshal(reqBody)
+	req := httptest.NewRequest(http.MethodPost, "/api/tutor", strings.NewReader(string(body)))
 	w := httptest.NewRecorder()
-	s.ServeHTTP(w, r)
-	if b := w.Body.String(); !strings.Contains(b, "No.") {
-		t.Fatalf("body = %s, want no", b)
+
+	h(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Code)
+	}
+}
+
+// TestYoutubeSearchHandler tests the /api/youtube endpoint.
+func TestYoutubeSearchHandler(t *testing.T) {
+	youtubeAPIKey := os.Getenv("YOUTUBE_API_KEY")
+	if youtubeAPIKey == "" {
+		t.Skip("YOUTUBE_API_KEY not set, skipping YouTube search handler test")
 	}
 
-	atomic.StoreInt32(&status.code, http.StatusOK)
+	ctx := context.Background()
+	youtubeService, err := youtube.NewService(ctx, option.WithAPIKey(youtubeAPIKey))
+	if err != nil {
+		t.Fatalf("Error creating YouTube service: %v", err)
+	}
 
-	<-sleep // Permit poll loop to stop sleeping.
-	<-done  // Wait for poller to see the "OK" status and exit.
+	h := handleYoutubeSearch(youtubeService)
 
-	// Make second request to the server.
-	w = httptest.NewRecorder()
-	s.ServeHTTP(w, r)
-	if b := w.Body.String(); !strings.Contains(b, "YES!") {
-		t.Fatalf("body = %q, want yes", b)
+	// Create a mock request with a query
+	req := httptest.NewRequest(http.MethodGet, "/api/youtube?q=testing", nil)
+	w := httptest.NewRecorder()
+
+	h(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Code)
 	}
 }
