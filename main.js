@@ -46,13 +46,12 @@
             body: JSON.stringify({ prompt: promptText }),
           });
 
-          if (!response.ok) {
-            throw new Error('API request failed');
+          const result = await response.json();
+          if (result.error) {
+            throw new Error(result.error);
           }
-
-          const data = await response.json();
-          // Extract the text from the response. This may need adjustment based on the actual Gemini API response structure.
-          return data.candidates[0].content.parts[0].text;
+          // Extract the text from the response.
+          return result.data.candidates[0].content.parts[0].text;
         } catch (error) {
           console.error('Error calling Go backend:', error);
           return "I'm having a little trouble connecting to my brain right now. Please try again in a moment! 🧸";
@@ -62,11 +61,11 @@
       async function searchYouTube(query) {
         try {
           const response = await fetch(`/api/youtube?q=${encodeURIComponent(query)}`);
-          if (!response.ok) {
-            throw new Error('YouTube API request failed');
+          const result = await response.json();
+          if (result.error) {
+            throw new Error(result.error);
           }
-          const data = await response.json();
-          displayVideos(data.items);
+          displayVideos(result.data.items);
         } catch (error) {
           console.error('Error searching YouTube:', error);
         }
