@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="CRYBABYFINAL - Cute AI-powered educational cloud for school girls. Study planner, AI tutor, digital library, rewards, and parent dashboard." />
+  <title>CRYBABYFINAL — Sweet Study Room</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700;800&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root{
+      --bg-1: #b3e5ff;
+      --bg-2: #ffd1e8;
+      --card: rgba(255,255,255,0.9);
+      --accent: #ff7ab6;
+      --accent-2: #77ddff;
+      --muted: #7b7b8a;
+      --glass: rgba(255,255,255,0.6);
+      --shadow: 0 8px 30px rgba(55,60,80,0.12);
+      --radius: 16px;
+      --max-width: 1100px;
+    }
+
+    [data-theme="dark"]{
+      --card: rgba(10,10,20,0.7);
+      --glass: rgba(255,255,255,0.03);
+      --muted: #c9d1ff;
+      --shadow: 0 10px 30px rgba(0,0,0,0.5);
+      background: linear-gradient(135deg,#04142b 0%, #2a0346 80%);
+    }
+
+    *{box-sizing:border-box}
+    html,body{
+      height:100%;
+      margin:0;
+      font-family: "Nunito", "Quicksand", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      background: linear-gradient(135deg,var(--bg-1) 0%, var(--bg-2) 100%);
+      transition:background 500ms ease;
+      color:#102030;
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+      padding:18px;
+      max-width:var(--max-width);
+      margin:18px auto;
+      width:calc(100% - 36px);
+    }
+
+    .logo{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .logo .mascot{
+      width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#fff 0%, rgba(255,255,255,0.8) 100%);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;padding:6px;
+      transform:translateY(-2px);
+    }
+
+    .title{
+      display:flex;flex-direction:column;line-height:1;
+    }
+    .title h1{margin:0;font-size:18px;letter-spacing:0.6px;}
+    .title p{margin:0;font-size:12px;color:var(--muted);}
+
+    .controls{display:flex;gap:12px;align-items:center;}
+    .btn{
+      background:linear-gradient(90deg,var(--accent),#ffa3d6);
+      border:none;color:white;font-weight:700;padding:10px 14px;border-radius:12px;cursor:pointer;box-shadow:0 6px 18px rgba(255,122,171,0.25);transition:transform .15s ease,box-shadow .15s;
+      display:inline-flex;align-items:center;gap:8px;font-size:14px;
+    }
+    .btn.secondary{
+      background:transparent;border:1px solid rgba(255,255,255,0.5);color:#102030;padding:8px 12px;
+      box-shadow:none;
+    }
+    .btn:active{transform:translateY(1px)}
+    .icon{
+      width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#fff8 0%,#fff0 100%);display:inline-flex;align-items:center;justify-content:center;
+    }
+
+    .shell{
+      max-width:var(--max-width);
+      margin:10px auto 60px;
+      width:calc(100% - 36px);
+      display:grid;
+      grid-template-columns: 240px 1fr;
+      gap:20px;
+      align-items:start;
+    }
+
+    @media (max-width:900px){
+      .shell{grid-template-columns:1fr; padding:0 12px}
+      header{flex-direction:column;align-items:flex-start;gap:8px}
+      .logo .mascot{width:48px;height:48px}
+    }
+
+    /* Sidebar */
+    nav.sidebar{
+      position:sticky;top:20px;height:calc(100vh - 110px);overflow:auto;padding:18px;border-radius:var(--radius);background:linear-gradient(180deg, var(--glass), rgba(255,255,255,0.4));
+      box-shadow:var(--shadow);
+      -webkit-backdrop-filter: blur(8px);backdrop-filter: blur(8px);
+    }
+    nav .nav-item{
+      display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px;margin-bottom:8px;cursor:pointer;color:#102030;font-weight:700;
+      transition:background .18s,transform .12s;
+    }
+    nav .nav-item:hover{transform:translateY(-3px)}
+    nav .nav-item.active{background:linear-gradient(90deg,#fff,#fff8);box-shadow:0 6px 20px rgba(0,0,0,0.06)}
+    nav .nav-item .dot{width:48px;height:48px;border-radius:12px;background:linear-gradient(180deg,var(--accent-2),#ffd9f3);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800}
+
+    /* Main area */
+    main.workspace{
+      min-height:60vh;padding:20px;border-radius:var(--radius);background:var(--card);box-shadow:var(--shadow);
+      -webkit-backdrop-filter: blur(6px);backdrop-filter: blur(6px);
+    }
+
+    .greet{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;
+    }
+    .greet-left{display:flex;gap:12px;align-items:center}
+    .avatar{
+      width:70px;height:70px;border-radius:18px;background:linear-gradient(135deg,#fff,#fff6);box-shadow:0 6px 18px rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:24px;color:#333;
+    }
+    .hello{font-weight:800;font-size:18px}
+    .sub{color:var(--muted);font-size:13px}
+
+    /* Cards */
+    .grid{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px;
+    }
+    @media (max-width:900px){.grid{grid-template-columns:repeat(1,1fr)}}
+
+    .card{
+      background:linear-gradient(180deg,rgba(255,255,255,0.9),rgba(255,255,255,0.85));
+      padding:14px;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,0.06);
+    }
+    .small{
+      font-size:12px;color:var(--muted);
+    }
+    .big{font-weight:800;font-size:20px}
+
+    /* Library list */
+    .lib-list{display:grid;gap:10px}
+    .file-card{display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px;background:linear-gradient(90deg,#fff,#fff8);border:1px solid rgba(0,0,0,0.02)}
+    .file-card img.icon-thumb{width:56px;height:56px;border-radius:10px;object-fit:cover}
+    .file-meta{flex:1}
+    .file-actions{display:flex;gap:8px}
+
+    /* Planner */
+    .planner{display:flex;gap:14px;flex-wrap:wrap}
+    .calendar{flex:1;min-width:260px;background:linear-gradient(180deg,#fff,#fff8);padding:12px;border-radius:12px}
+    .tasks{flex:1;min-width:260px;background:linear-gradient(180deg,#fff,#fff8);padding:12px;border-radius:12px}
+    .weekday{display:flex;justify-content:space-between;padding:6px 8px;border-radius:8px;margin-bottom:6px;align-items:center}
+    .day{padding:8px;border-radius:10px}
+    .task{display:flex;gap:8px;align-items:center;padding:8px;border-radius:10px;margin-bottom:8px;border:1px dashed rgba(0,0,0,0.04)}
+
+    /* Chat */
+    .chat{
+      display:flex;flex-direction:column;gap:10px;height:380px;
+    }
+    .messages{flex:1;overflow:auto;padding:12px;border-radius:10px;background:linear-gradient(180deg,#fbfbff,#fff);border:1px solid rgba(0,0,0,0.02)}
+    .msg{max-width:75%;padding:10px;border-radius:12px;margin-bottom:8px;display:inline-block}
+    .msg.ai{background:linear-gradient(90deg,#fff,#f0f8ff);align-self:flex-start}
+    .msg.user{background:linear-gradient(90deg,#ffecf6,#fff0);align-self:flex-end}
+
+    .input-row{display:flex;gap:8px;margin-top:8px}
+
+    /* Rewards */
+    .stars{display:flex;gap:6px;align-items:center}
+    .star{width:48px;height:48px;border-radius:12px;background:linear-gradient(90deg,#ffd36e,#ffb6c1);display:flex;align-items:center;justify-content:center;font-weight:800;box-shadow:0 6px 18px rgba(255,150,150,0.15)}
+    .badge{padding:8px;border-radius:12px;background:linear-gradient(90deg,#fff,#fff8);display:inline-block;margin-right:8px;box-shadow:var(--shadow)}
+    .confetti{position:fixed;pointer-events:none;inset:0;z-index:1000}
+
+    /* Footer */
+    footer{max-width:var(--max-width);margin:20px auto 80px;text-align:center;color:var(--muted)}
+
+    /* Tiny helpers */
+    .muted{color:var(--muted)}
+    input,textarea,select{font-family:inherit}
+    .form-row{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+    .form-row input,.form-row textarea,.form-row select{padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,0.05);background:white}
+    .chip{padding:6px 10px;border-radius:20px;background:linear-gradient(90deg,#fff,#fff9);box-shadow:0 6px 18px rgba(0,0,0,0.04);display:inline-flex;gap:8px;align-items:center}
+
+    /* Transitions */
+    .fade-in{animation:fadeIn .6s both}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+    /* Floating mascot */
+    .floating{
+      position:fixed;right:18px;bottom:18px;width:84px;height:84px;border-radius:20px;background:linear-gradient(135deg,#fff,#ffeaf1);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(0,0,0,0.12);z-index:40;cursor:pointer;
+      transition:transform .18s ease;
+    }
+    .floating:hover{transform:translateY(-6px) rotate(-6deg)}
+    .mascot-svg{width:56px;height:56px}
+
+    /* Responsive tweaks */
+    @media (max-width:480px){
+      .avatar{width:56px;height:56px}
+      .greet{flex-direction:column;align-items:flex-start;gap:6px}
+    }
+
+    /* small badges */
+    .pill{padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,#ffe8f5,#e8f7ff);font-weight:700;color:#3b2a3b}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <div class="mascot" aria-hidden>
+        <!-- Cute teddy SVG -->
+        <svg width="40" height="40" viewBox="0 0 64 64" class="mascot-svg" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
+              <stop offset="0" stop-color="#ffd1e8"/>
+              <stop offset="1" stop-color="#ffb6d5"/>
+            </linearGradient>
+          </defs>
+          <rect x="0" y="0" width="64" height="64" rx="12" fill="url(#g1)"/>
+          <g transform="translate(8,8)">
+            <circle cx="12" cy="12" r="8" fill="#fff1f7"/>
+            <circle cx="36" cy="12" r="8" fill="#fff1f7"/>
+            <circle cx="24" cy="24" r="16" fill="#fff8fd"/>
+            <circle cx="20" cy="22" r="2" fill="#402a2a"/>
+            <circle cx="28" cy="22" r="2" fill="#402a2a"/>
+            <path d="M20 30 Q24 34 28 30" stroke="#402a2a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+          </g>
+        </svg>
+      </div>
+      <div class="title">
+        <h1>CRYBABYFINAL</h1>
+        <p>Sweet Study Room — Friendly AI Tutor</p>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div id="themeToggle" class="chip" title="Toggle light/dark">🌙 Night</div>
+      <button class="btn" id="btnNewTask"><span>➕</span> Add Task</button>
+      <button class="btn" id="btnOpenAuth">Login / Signup</button>
+    </div>
+  </header>
+
+  <div class="shell">
+    <nav class="sidebar" aria-label="Main navigation">
+      <div id="navDashboard" class="nav-item active" data-page="dashboard"><div class="dot">🏠</div><div>Dashboard</div></div>
+      <div id="navLibrary" class="nav-item" data-page="library"><div class="dot">📚</div><div>Digital Library</div></div>
+      <div id="navPlanner" class="nav-item" data-page="planner"><div class="dot">🗓️</div><div>Study Planner</div></div>
+      <div id="navTutor" class="nav-item" data-page="tutor"><div class="dot">🤖</div><div>AI Tutor</div></div>
+      <div id="navVideos" class="nav-item" data-page="videos"><div class="dot">▶️</div><div>Video Suggestions</div></div>
+      <div id="navRewards" class="nav-item" data-page="rewards"><div class="dot">⭐</div><div>Rewards</div></div>
+      <div id="navProfile" class="nav-item" data-page="profile"><div class="dot">👧</div><div>Profile</div></div>
+      <div id="navAdmin" class="nav-item" data-page="admin" style="display:none"><div class="dot">👪</div><div>Parent Dashboard</div></div>
+
+      <hr style="border:none;border-top:1px dashed rgba(0,0,0,0.03);margin:12px 0">
+      <div style="font-size:13px;color:var(--muted);padding:6px">Quick Tips</div>
+      <ul style="padding-left:18px;margin:0;color:var(--muted);font-size:13px">
+        <li>Ask the AI in a friendly way 🧸</li>
+        <li>Upload notes & PDFs in Library</li>
+        <li>Earn stars for sticking to your plan ⭐</li>
+      </ul>
+    </nav>
+
+    <main class="workspace" id="mainContent">
+      <!-- Dashboard (default) -->
+      <section id="page-dashboard" class="page fade-in">
+        <div class="greet">
+          <div class="greet-left">
+            <div class="avatar" id="avatarLabel">CB</div>
+            <div>
+              <div class="hello" id="greetName">Welcome, Friend!</div>
+              <div class="sub" id="greetSub">Let's learn something lovely today ✨</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:center">
+            <div class="pill" id="streakPill">🔥 Streak: 0 days</div>
+            <div class="pill" id="starsPill">⭐ Stars: 0</div>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <div class="small">Today's Study Time</div>
+            <div class="big" id="todayTime">0h 0m</div>
+            <div class="sub">Keep going! Complete a task to earn stars.</div>
+          </div>
+
+          <div class="card">
+            <div class="small">Upcoming Tasks</div>
+            <div id="upcomingList" style="margin-top:8px"></div>
+          </div>
+
+          <div class="card">
+            <div class="small">Quick Actions</div>
+            <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn" id="quickChat">Ask AI Tutor</button>
+              <button class="btn" id="quickLibrary">Open Library</button>
+              <button class="btn" id="quickPlanner">Open Planner</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px">
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+              <div style="font-weight:800">Study Progress</div>
+              <div class="small muted">Past week</div>
+            </div>
+            <canvas id="chartProgress" height="160"></canvas>
+          </div>
+
+          <div class="card">
+            <div style="font-weight:800;margin-bottom:8px">Badges & Stars</div>
+            <div style="margin-bottom:8px" id="badgeRow"></div>
+            <div style="margin-top:12px" class="small muted">Earn stars by completing tasks and keeping streaks!</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Library -->
+      <section id="page-library" class="page" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <div style="font-weight:800">Digital Library</div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <select id="filterSubject" style="padding:8px;border-radius:10px">
+              <option value="all">All Subjects</option>
+            </select>
+            <label class="btn secondary" style="display:inline-flex;align-items:center;gap:8px;cursor:pointer">
+              Upload <input id="fileUpload" type="file" style="display:none" multiple />
+            </label>
+            <button class="btn" id="btnDownloadAll">Download All</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="small muted" style="margin-bottom:8px">Search materials</div>
+          <div style="display:flex;gap:8px;margin-bottom:12px">
+            <input id="libSearch" placeholder="Search by title or topic" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,0.05)" />
+            <select id="sortLib" style="padding:10px;border-radius:10px">
+              <option value="new">Newest</option><option value="title">Title</option>
+            </select>
+          </div>
+
+          <div class="lib-list" id="libList"></div>
+        </div>
+      </section>
+
+      <!-- Planner -->
+      <section id="page-planner" class="page" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div style="font-weight:800">Study Planner & Calendar</div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="btn" id="btnAddPlan">Add Plan</button>
+            <button class="btn secondary" id="btnSync">Sync (Mock)</button>
+          </div>
+        </div>
+
+        <div class="planner">
+          <div class="calendar">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <div style="font-weight:800" id="calendarMonth">Week View</div>
+              <div>
+                <button class="btn secondary" id="prevWeek">◀</button>
+                <button class="btn secondary" id="nextWeek">▶</button>
+              </div>
+            </div>
+            <div id="weekView"></div>
+          </div>
+
+          <div class="tasks">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font-weight:800">Tasks</div>
+              <div class="small muted">Tap to mark as done</div>
+            </div>
+            <div id="taskList" style="margin-top:10px"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tutor -->
+      <section id="page-tutor" class="page" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div style="font-weight:800">AI Study Assistant</div>
+          <div class="small muted">Friendly, simple, with emojis 🧸✨</div>
+        </div>
+
+        <div class="card">
+          <div style="display:flex;gap:12px;align-items:center;margin-bottom:10px">
+            <select id="aiMode" style="padding:8px;border-radius:10px">
+              <option value="tutor">Tutor (Explain)</option><option value="schedule">Schedule</option><option value="homework">Homework Help</option>
+            </select>
+            <input id="aiSubject" placeholder="Subject / Topic (e.g., Fractions)" style="flex:1;padding:8px;border-radius:10px" />
+            <button class="btn" id="btnAsk">Ask</button>
+          </div>
+
+          <div class="chat">
+            <div class="messages" id="chatMessages" aria-live="polite"></div>
+            <div style="display:flex;gap:8px">
+              <input id="chatInput" placeholder="Ask the AI anything... (or press Ask)" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,0.04)" />
+              <button class="btn" id="sendMsg">Send</button>
+            </div>
+            <div style="margin-top:8px" class="small muted">Tip: You can click "Use real API" to connect a GPT key (mock supported).</div>
+            <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+              <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="useRealApi"/> Use real API (optional)</label>
+              <input id="apiKey" placeholder="OpenAI API Key (optional)" style="flex:1;padding:8px;border-radius:10px" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Videos -->
+      <section id="page-videos" class="page" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div style="font-weight:800">AI YouTube Suggestions</div>
+          <div class="small muted">Child-safe & educational videos</div>
+        </div>
+
+        <div class="card">
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px">
+            <input id="videoTopic" placeholder="Type a topic (e.g., fractions)" style="flex:1;padding:8px;border-radius:10px;border:1px solid rgba(0,0,0,0.04)"/>
+            <button class="btn" id="btnSuggest">Suggest Videos</button>
+          </div>
+
+          <div id="videoList" style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px"></div>
+        </div>
+      </section>
+
+      <!-- Rewards -->
+      <section id="page-rewards" class="page" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div style="font-weight:800">Rewards & Badges</div>
+          <div class="small muted">Collect stars to unlock cute badges</div>
+        </div>
+
+        <div class="card">
+          <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px">
+            <div class="stars" id="starDisplay"></div>
+            <div style="flex:1">
+              <div style="font-weight:800" id="starCountBig">0 Stars</div>
+              <div class="small muted">Use stars to celebrate your wins!</div>
+            </div>
+            <button class="btn" id="spendStar">Spend Star (Celebrate)</button>
+          </div>
+
+          <div style="display:flex;gap:12px;flex-wrap:wrap" id="allBadges"></div>
+        </div>
+      </section>
+
+      <!-- Profile -->
+      <section id="page-profile" class="page" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div style="font-weight:800">Profile</div>
+          <div>
+            <button class="btn secondary" id="btnLogout">Logout</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="form-row">
+            <label>Username</label>
+            <input id="profileUsername" disabled />
+          </div>
+          <div class="form-row">
+            <label>Role</label>
+            <input id="profileRole" disabled />
+          </div>
+          <div class="form-row">
+            <label>Theme Preference</label>
+            <select id="profileTheme">
+              <option value="light">Light</option><option value="dark">Dark</option>
+            </select>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn" id="saveProfile">Save</button>
+            <button class="btn secondary" id="deleteAccount">Delete Account</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Admin -->
+      <section id="page-admin" class="page" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div style="font-weight:800">Parent / Admin Dashboard</div>
+          <div class="small muted">Monitor student progress & manage content</div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 420px;gap:12px">
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+              <div style="font-weight:800">Users</div>
+              <div class="small muted">Manage accounts</div>
+            </div>
+            <div id="adminUsers"></div>
+          </div>
+
+          <div class="card">
+            <div style="font-weight:800;margin-bottom:8px">Content Control</div>
+            <div style="display:flex;gap:8px;margin-bottom:8px">
+              <select id="adminMaterialsFilter" style="padding:8px;border-radius:10px">
+                <option value="all">All Materials</option>
+              </select>
+              <button class="btn" id="btnAdminRefresh">Refresh</button>
+            </div>
+            <div id="adminMaterials"></div>
+          </div>
+        </div>
+
+      </section>
+    </main>
+  </div>
+
+  <div class="floating" id="floatingMascot" title="Ask the AI Tutor">
+    <svg viewBox="0 0 64 64" width="56" height="56" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="fg" x1="0" x2="1"><stop offset="0" stop-color="#ff9bd6"/><stop offset="1" stop-color="#77ddff"/></linearGradient></defs>
+      <rect rx="14" width="64" height="64" fill="url(#fg)"/>
+      <text x="50%" y="55%" text-anchor="middle" font-size="28" font-family="Nunito" fill="#fff" font-weight="800">💬</text>
+    </svg>
+  </div>
+
+  <div class="confetti" id="confetti"></div>
+
+  <footer>
+    <div style="font-weight:800">CRYBABYFINAL — Sweet Study Room</div>
+    <div class="small muted">Made with ❤️ — kid-friendly learning, offline-ready (PWA), and parent controls.</div>
+  </footer>
+
+  <!-- Authentication Modal (simple in-page) -->
+  <div id="authModal" style="display:none;position:fixed;inset:0;align-items:center;justify-content:center;background:rgba(5,10,20,0.4);z-index:1000;padding:18px">
+    <div style="max-width:520px;width:100%;background:var(--card);padding:18px;border-radius:14px;box-shadow:var(--shadow);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div style="font-weight:800">Login / Signup</div>
+        <div style="color:var(--muted)">Secure & kid-safe</div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <button class="btn" id="showLogin">Login</button>
+        <button class="btn secondary" id="showSignup">Signup</button>
+      </div>
+
+      <div id="authArea">
+        <!-- login form -->
+        <div id="formLogin" style="display:block">
+          <div class="form-row"><label>Username</label><input id="loginUser" /></div>
+          <div class="form-row"><label>Password</label><input id="loginPass" type="password" /></div>
+          <div style="display:flex;gap:8px">
+            <button class="btn" id="doLogin">Login</button>
+            <button class="btn secondary" id="closeAuth">Close</button>
+          </div>
+        </div>
+
+        <!-- signup form -->
+        <div id="formSignup" style="display:none">
+          <div class="form-row"><label>Username</label><input id="signupUser" /></div>
+          <div class="form-row"><label>Password</label><input id="signupPass" type="password" /></div>
+          <div class="form-row"><label>Role</label>
+            <select id="signupRole">
+              <option value="student">Student</option>
+              <option value="admin">Parent / Admin</option>
+            </select>
+            <small class="muted">Parents choose Admin.</small>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn" id="doSignup">Create Account</button>
+            <button class="btn secondary" id="closeAuth2">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      // Lightweight app state using localStorage to persist (demo cloud-like)
+      const store = {
+        get(key, fallback){
+          try{
+            const raw = localStorage.getItem(key);
+            return raw ? JSON.parse(raw) : fallback;
+          }catch(e){return fallback}
+        },
+        set(key, val){ localStorage.setItem(key, JSON.stringify(val)); },
+        remove(key){ localStorage.removeItem(key); }
+      };
+
+      // Initialize default data
+      if(!store.get('cb_users')) {
+        const defaultUsers = {
+          "parent": { username: "parent", role: "admin", passHash: null, created: Date.now() },
+          "luna": { username: "luna", role: "student", passHash: null, created: Date.now() }
+        };
+        store.set('cb_users', defaultUsers);
+      }
+      if(!store.get('cb_materials')) store.set('cb_materials', []);
+      if(!store.get('cb_tasks')) store.set('cb_tasks', []);
+      if(!store.get('cb_chats')) store.set('cb_chats', []);
+      if(!store.get('cb_progress')) store.set('cb_progress', { weekly: Array(7).fill(0), stars: 0, streak: 0 });
+      if(!store.get('cb_theme')) store.set('cb_theme', 'light');
+
+      // Elements
+      const pages = Array.from(document.querySelectorAll('.page'));
+      const navItems = Array.from(document.querySelectorAll('.nav-item'));
+      const mainContent = document.getElementById('mainContent');
+      const authModal = document.getElementById('authModal');
+      const btnOpenAuth = document.getElementById('btnOpenAuth');
+      const showLogin = document.getElementById('showLogin');
+      const showSignup = document.getElementById('showSignup');
+      const formLogin = document.getElementById('formLogin');
+      const formSignup = document.getElementById('formSignup');
+      const doLogin = document.getElementById('doLogin');
+      const doSignup = document.getElementById('doSignup');
+      const closeAuth = document.getElementById('closeAuth');
+      const closeAuth2 = document.getElementById('closeAuth2');
+
+      const themeToggle = document.getElementById('themeToggle');
+      const avatarLabel = document.getElementById('avatarLabel');
+      const greetName = document.getElementById('greetName');
+      const greetSub = document.getElementById('greetSub');
+      const streakPill = document.getElementById('streakPill');
+      const starsPill = document.getElementById('starsPill');
+
+      const libList = document.getElementById('libList');
+      const libSearch = document.getElementById('libSearch');
+      const fileUpload = document.getElementById('fileUpload');
+      const filterSubject = document.getElementById('filterSubject');
+      const sortLib = document.getElementById('sortLib');
+
+      const weekView = document.getElementById('weekView');
+      const taskList = document.getElementById('taskList');
+      const btnNewTask = document.getElementById('btnNewTask');
+      const btnAddPlan = document.getElementById('btnAddPlan');
+
+      const chatMessages = document.getElementById('chatMessages');
+      const chatInput = document.getElementById('chatInput');
+      const sendMsg = document.getElementById('sendMsg');
+      const btnAsk = document.getElementById('btnAsk');
+      const aiSubject = document.getElementById('aiSubject');
+      const aiMode = document.getElementById('aiMode');
+      const useRealApi = document.getElementById('useRealApi');
+      const apiKeyInput = document.getElementById('apiKey');
+
+      const quickChat = document.getElementById('quickChat');
+      const quickLibrary = document.getElementById('quickLibrary');
+      const quickPlanner = document.getElementById('quickPlanner');
+
+      const videoList = document.getElementById('videoList');
+      const videoTopic = document.getElementById('videoTopic');
+      const btnSuggest = document.getElementById('btnSuggest');
+
+      const starDisplay = document.getElementById('starDisplay');
+      const starCountBig = document.getElementById('starCountBig');
+      const spendStar = document.getElementById('spendStar');
+      const allBadges = document.getElementById('allBadges');
+
+      const profileUsername = document.getElementById('profileUsername');
+      const profileRole = document.getElementById('profileRole');
+      const profileTheme = document.getElementById('profileTheme');
+      const saveProfile = document.getElementById('saveProfile');
+      const deleteAccount = document.getElementById('deleteAccount');
+      const btnLogout = document.getElementById('btnLogout');
+
+      const navAdmin = document.getElementById('navAdmin');
+      const adminUsers = document.getElementById('adminUsers');
+      const adminMaterials = document.getElementById('adminMaterials');
+      const adminMaterialsFilter = document.getElementById('adminMaterialsFilter');
+      const btnAdminRefresh = document.getElementById('btnAdminRefresh');
+
+      const chartCtx = document.getElementById('chartProgress').getContext('2d');
+
+      // Session
+      let session = store.get('cb_session', null);
+
+      // Apply theme
+      function applyTheme(theme){
+        document.documentElement.setAttribute('data-theme', theme === 'dark' ? 'dark' : 'light');
+        themeToggle.textContent = theme === 'dark' ? '☀️ Day' : '🌙 Night';
+        store.set('cb_theme', theme);
+      }
+      applyTheme(store.get('cb_theme','light'));
+
+      // Routing
+      function showPage(id){
+        pages.forEach(p => p.style.display = p.id === 'page-' + id ? '' : 'none');
+        navItems.forEach(n => n.classList.toggle('active', n.dataset.page === id));
+      }
+      navItems.forEach(n => n.addEventListener('click', ()=> {
+        if(n.dataset.page === 'admin' && (!session || session.role !== 'admin')) {
+          alert('Admin only. Please login as parent/admin.');
+          return;
+        }
+        showPage(n.dataset.page);
+      }));
+
+      // Update UI for session
+      function updateSessionUI(){
+        session = store.get('cb_session', null);
+        if(session){
+          avatarLabel.textContent = session.username.slice(0,2).toUpperCase();
+          greetName.textContent = `Hello, ${session.username}!`;
+          greetSub.textContent = session.role === 'student' ? 'Ready to learn with your cute AI teacher 🧸' : 'Parent / Admin Dashboard';
+          btnOpenAuth.style.display = 'none';
+          // show admin nav if admin
+          navAdmin.style.display = session.role === 'admin' ? '' : 'none';
+          // fill profile
+          profileUsername.value = session.username;
+          profileRole.value = session.role;
+          profileTheme.value = store.get('cb_theme','light');
+
+        } else {
+          avatarLabel.textContent = 'CB';
+          greetName.textContent = 'Welcome, Friend!';
+          greetSub.textContent = "Let's learn something lovely today ✨";
+          btnOpenAuth.style.display = '';
+          navAdmin.style.display = 'none';
+        }
+        renderProgress();
+        renderUpcoming();
+        renderTasks();
+        renderLibrary();
+        renderBadges();
+        renderAdmin();
+      }
+
+      // Password hashing using Web Crypto (SHA-256)
+      async function hashPass(pass){
+        const enc = new TextEncoder().encode(pass);
+        const buf = await crypto.subtle.digest('SHA-256', enc);
+        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+      }
+
+      // Auth handlers
+      btnOpenAuth.addEventListener('click', ()=> authModal.style.display = 'flex');
+      closeAuth.addEventListener('click', ()=> authModal.style.display = 'none');
+      closeAuth2.addEventListener('click', ()=> authModal.style.display = 'none');
+      showLogin.addEventListener('click', ()=> { formLogin.style.display='block'; formSignup.style.display='none'; });
+      showSignup.addEventListener('click', ()=> { formLogin.style.display='none'; formSignup.style.display='block'; });
+
+      doSignup.addEventListener('click', async ()=>{
+        const username = document.getElementById('signupUser').value.trim();
+        const pass = document.getElementById('signupPass').value;
+        const role = document.getElementById('signupRole').value;
+        if(!username || !pass){ alert('Please enter username and password.'); return; }
+
+        const users = store.get('cb_users', {});
+        if(users[username]){ alert('Username exists. Choose another.'); return; }
+        const hashed = await hashPass(pass);
+        users[username] = { username, role, passHash: hashed, created: Date.now() };
+        store.set('cb_users', users);
+        // auto login
+        store.set('cb_session', { username, role, createdAt: Date.now() });
+        updateSessionUI();
+        authModal.style.display='none';
+        confettiBurst();
+        alert('Welcome! Account created.');
+      });
+
+      doLogin.addEventListener('click', async ()=>{
+        const username = document.getElementById('loginUser').value.trim();
+        const pass = document.getElementById('loginPass').value;
+        if(!username || !pass){ alert('Please enter credentials.'); return; }
+        const users = store.get('cb_users', {});
+        if(!users[username]){ alert('No such user. Please signup.'); return; }
+        const hashed = await hashPass(pass);
+        if(users[username].passHash && users[username].passHash !== hashed){
+          alert('Incorrect password.'); return;
+        }
+        store.set('cb_session', { username, role: users[username].role, createdAt: Date.now() });
+        updateSessionUI();
+        authModal.style.display='none';
+        alert('Logged in successfully!');
+      });
+
+      btnLogout.addEventListener('click', ()=> {
+        store.remove('cb_session');
+        updateSessionUI();
+      });
+
+      deleteAccount.addEventListener('click', ()=>{
+        if(!session){ alert('No account active.'); return; }
+        const users = store.get('cb_users', {});
+        delete users[session.username];
+        store.set('cb_users', users);
+        store.remove('cb_session');
+        updateSessionUI();
+        alert('Account deleted.');
+      });
+
+      saveProfile.addEventListener('click', ()=>{
+        const theme = profileTheme.value;
+        applyTheme(theme);
+        alert('Profile saved.');
+      });
+
+      // Library handlers
+      async function fileToDataURL(file){
+        return new Promise((res,rej)=>{
+          const reader = new FileReader();
+          reader.onload = ()=> res(reader.result);
+          reader.onerror = rej;
+          reader.readAsDataURL(file);
+        });
+      }
+
+      fileUpload.addEventListener('change', async (e)=>{
+        const files = Array.from(e.target.files);
+        if(!session){ alert('Please login to upload materials.'); return; }
+        const materials = store.get('cb_materials', []);
+        for(const f of files){
+          const data = await fileToDataURL(f);
+          materials.push({
+            id: 'm_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),
+            title: f.name,
+            subject: prompt('Assign a subject (e.g., Math, Science) for ' + f.name, 'General') || 'General',
+            uploadedBy: session.username,
+            dataURL: data,
+            type: f.type,
+            size: f.size,
+            createdAt: Date.now()
+          });
+        }
+        store.set('cb_materials', materials);
+        fileUpload.value = '';
+        renderLibrary();
+        alert('Uploaded! Available in your library.');
+      });
+
+      libSearch.addEventListener('input', renderLibrary);
+      sortLib.addEventListener('change', renderLibrary);
+      filterSubject.addEventListener('change', renderLibrary);
+
+      function renderLibrary(){
+        const list = store.get('cb_materials', []);
+        // populate subject filter
+        const subjects = Array.from(new Set(list.map(m => m.subject)));
+        filterSubject.innerHTML = '<option value="all">All Subjects</option>' + subjects.map(s => `<option value="${s}">${s}</option>`).join('');
+        adminMaterialsFilter.innerHTML = '<option value="all">All Materials</option>' + subjects.map(s => `<option value="${s}">${s}</option>`).join('');
+
+        const q = libSearch.value.trim().toLowerCase();
+        let filtered = list.filter(m => (filterSubject.value === 'all' || m.subject === filterSubject.value) &&
+                                  (q === '' || m.title.toLowerCase().includes(q) || (m.subject && m.subject.toLowerCase().includes(q))));
+        if(sortLib.value === 'title') filtered.sort((a,b)=>a.title.localeCompare(b.title)); else filtered.sort((a,b)=>b.createdAt - a.createdAt);
+
+        libList.innerHTML = '';
+        filtered.forEach(m => {
+          const div = document.createElement('div');
+          div.className = 'file-card';
+          div.innerHTML = `<img class="icon-thumb" src="${m.type.startsWith('image/') ? m.dataURL : 'data:application/pdf;base64, ' + (m.type==='application/pdf' ? m.dataURL.split(',')[1] : '')}" alt="thumb">
+            <div class="file-meta">
+              <div style="font-weight:800">${m.title}</div>
+              <div class="small muted">${m.subject} • uploaded by ${m.uploadedBy}</div>
+            </div>
+            <div class="file-actions">
+              <button class="btn secondary" data-id="${m.id}" data-act="view">Open</button>
+              <button class="btn" data-id="${m.id}" data-act="download">Download</button>
+            </div>`;
+          libList.appendChild(div);
+        });
+
+        libList.querySelectorAll('button').forEach(btn => {
+          btn.addEventListener('click', (e)=>{
+            const id = e.currentTarget.dataset.id;
+            const act = e.currentTarget.dataset.act;
+            const mat = store.get('cb_materials', []).find(x => x.id === id);
+            if(!mat) return alert('Material not found.');
+            if(act === 'view'){
+              // open reader in new tab or modal - create blob
+              if(mat.type === 'application/pdf'){
+                // open PDF in new tab
+                const w = window.open();
+                w.document.write(`<title>${mat.title}</title><embed width="100%" height="100%" src="${mat.dataURL}" type="application/pdf">`);
+              } else if(mat.type.startsWith('image/')){
+                const w = window.open();
+                w.document.write(`<title>${mat.title}</title><img src="${mat.dataURL}" style="max-width:100%"/>`);
+              } else {
+                const w = window.open();
+                w.document.write(`<title>${mat.title}</title><pre style="white-space:pre-wrap">${atob(mat.dataURL.split(',')[1] || '')}</pre>`);
+              }
+            } else if(act === 'download'){
+              const a = document.createElement('a');
+              a.href = mat.dataURL;
+              a.download = mat.title;
+              document.body.appendChild(a); a.click(); a.remove();
+            }
+          });
+        });
+      }
+
+      // Planner & tasks
+      function renderTasks(){
+        const tasks = store.get('cb_tasks', []);
+        taskList.innerHTML = '';
+        tasks.forEach(t => {
+          const div = document.createElement('div');
+          div.className = 'task';
+          div.innerHTML = `<input type="checkbox" ${t.done? 'checked':''} data-id="${t.id}"/> <div style="flex:1"><strong>${t.title}</strong><div class="small muted">${new Date(t.due).toLocaleString()}</div></div> <div class="small muted">${t.subject||''}</div>`;
+          taskList.appendChild(div);
+        });
+        taskList.querySelectorAll('input[type=checkbox]').forEach(cb=>{
+          cb.addEventListener('change', (e)=>{
+            const id = e.currentTarget.dataset.id;
+            const tasks = store.get('cb_tasks', []);
+            const t = tasks.find(x => x.id === id);
+            if(t){
+              t.done = e.currentTarget.checked;
+              store.set('cb_tasks', tasks);
+              if(t.done){
+                // reward star
+                const progress = store.get('cb_progress', { weekly: Array(7).fill(0), stars:0, streak:0 });
+                progress.stars = (progress.stars || 0) + 1;
+                // mark today's progress
+                const dayIndex = (new Date()).getDay();
+                progress.weekly[dayIndex] = (progress.weekly[dayIndex] || 0) + 30; // +30 minutes
+                // update streak
+                progress.streak = Math.max((progress.streak||0)+1,1);
+                store.set('cb_progress', progress);
+                confettiBurst();
+                renderProgress();
+                renderBadges();
+                renderTasks();
+              }
+            }
+          });
+        });
+      }
+
+      btnNewTask.addEventListener('click', ()=> openAddTaskModal());
+      btnAddPlan.addEventListener('click', ()=> openAddTaskModal());
+
+      function openAddTaskModal(){
+        const title = prompt('Task title (e.g., Math: Practice fractions)', 'Study: ');
+        if(!title) return;
+        const when = prompt('Due date/time (YYYY-MM-DD HH:MM) — leave blank for today', new Date().toISOString().slice(0,16).replace('T',' '));
+        const subject = prompt('Subject (optional)', 'General');
+        const tasks = store.get('cb_tasks', []);
+        tasks.push({ id: 't_'+Date.now(), title, due: when ? new Date(when).toString() : new Date().toString(), subject, done:false });
+        store.set('cb_tasks', tasks);
+        renderTasks();
+        renderUpcoming();
+      }
+
+      function renderUpcoming(){
+        const tasks = store.get('cb_tasks', []).filter(t => !t.done).sort((a,b)=>new Date(a.due) - new Date(b.due)).slice(0,4);
+        const upcomingList = document.getElementById('upcomingList');
+        upcomingList.innerHTML = tasks.map(t => `<div style="padding:6px 0"><strong>${t.title}</strong><div class="small muted">${new Date(t.due).toLocaleString()}</div></div>`).join('');
+      }
+
+      // week view
+      let weekOffset = 0;
+      document.getElementById('prevWeek').addEventListener('click', ()=>{ weekOffset--; renderWeek(); });
+      document.getElementById('nextWeek').addEventListener('click', ()=>{ weekOffset++; renderWeek(); });
+
+      function renderWeek(){
+        const d = new Date();
+        const start = new Date(d);
+        start.setDate(d.getDate() + weekOffset * 7);
+        const days = [];
+        for(let i=0;i<7;i++){
+          const day = new Date(start); day.setDate(start.getDate() - start.getDay() + i);
+          days.push(day);
+        }
+        weekView.innerHTML = days.map(day=>{
+          const dayLabel = day.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});
+          const tasks = store.get('cb_tasks', []).filter(t => new Date(t.due).toDateString() === day.toDateString());
+          return `<div class="weekday"><div class="day"><strong>${dayLabel}</strong></div><div style="margin-top:6px">${tasks.map(ts => `<div class="small muted">${ts.title}</div>`).join('')}</div></div>`;
+        }).join('');
+        document.getElementById('calendarMonth').textContent = `Week of ${days[0].toLocaleDateString()}`
+      }
+
+      // AI Tutor (mock plus optional real API support)
+      function appendChat(who, text){
+        const div = document.createElement('div');
+        div.className = 'msg ' + (who === 'ai' ? 'ai' : 'user');
+        div.innerHTML = text;
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        // save chat
+        const chats = store.get('cb_chats', []);
+        chats.push({ by: who, text, at: Date.now(), user: session ? session.username : 'guest' });
+        store.set('cb_chats', chats);
+      }
+
+      async function getAIResponse(promptText, mode){
+        // If useRealApi checked and key provided, attempt to call OpenAI's chat completions endpoint (mock safety: small)
+        if(useRealApi.checked && apiKeyInput.value.trim()){
+          try{
+            const apiKey = apiKeyInput.value.trim();
+            const body = {
+              model: "gpt-4o-mini", // placeholder, users may change
+              messages: [{role:'user', content: `Explain in simple child-friendly language: ${promptText}. Use emojis and encouraging tone.`}],
+              max_tokens: 400
+            };
+            const res = await fetch('https://api.openai.com/v1/chat/completions', {
+              method:'POST', headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+apiKey }, body: JSON.stringify(body)
+            });
+            const js = await res.json();
+            const content = js.choices && js.choices[0] && (js.choices[0].message?.content || js.choices[0].text) || 'Sorry, API did not return a response.';
+            return content;
+          }catch(err){
+            console.error(err);
+            return "I couldn't reach the real API. I'll help with my built-in tutor instead 😊";
+          }
+        }
+        // Mock "cute" tutor responses — child-friendly
+        const base = [
+          "Oh lovely! Let's break it down step by step 🧸✨",
+          "Imagine it like a little story 📖:",
+          "First, think of it as...",
+          "Try an example: ",
+          "Keep going! You're doing great 💖"
+        ];
+        const encouraging = ["You can do it!", "Keep trying, superstar!", "A+ for effort! 🌟", "Big hug after this! 🤗"];
+        // generate some canned useful responses depending on mode
+        let resp = '';
+        if(mode === 'schedule'){
+          resp = `Let's make a cute study plan for ${promptText || 'your subjects'}:\n\n- Study 25 minutes focused 📝\n- Take a 5 minute break 🍬\n- Repeat 3 times\n\nI'll remind you gently and you can earn stars for finishing tasks ⭐`;
+        } else if(mode === 'homework'){
+          resp = `Homework help for: ${promptText}\n\n1) Read the question slowly.\n2) Try to solve it step-by-step.\n3) If stuck, ask me for a hint 🔍\n\nExample: If the problem is addition, try drawing little items to count. 🐻🍓`;
+        } else {
+          resp = `${base[0]} ${base[1]} ${base[3]} ${promptText ? '\n\n' + promptText + '\n\n' : ''}${encourage()}`
+        }
+        return resp;
+
+        function encourage(){ return encouraging[Math.floor(Math.random()*encouraging.length)]; }
+      }
+
+      sendMsg.addEventListener('click', async ()=>{
+        const txt = chatInput.value.trim();
+        if(!txt) return;
+        appendChat('user', `<div>${escapeHtml(txt)}</div>`);
+        chatInput.value = '';
+        appendChat('ai', `<div class="small muted">Thinking... 🐣</div>`);
+        // remove last "thinking"
+        setTimeout(async ()=>{
+          const res = await getAIResponse(txt, aiMode.value);
+          // replace last AI with content
+          const lastAI = Array.from(chatMessages.querySelectorAll('.msg.ai')).pop();
+          if(lastAI) lastAI.innerHTML = escapeHtml(String(res)).replace(/\n/g,'<br>');
+          // award small star for interacting (encourage)
+          giveStar(0);
+        }, 700);
+      });
+
+      btnAsk.addEventListener('click', async ()=>{
+        const topic = aiSubject.value.trim();
+        if(!topic){ alert('Please enter a subject or topic.'); return; }
+        appendChat('user', `<div>${escapeHtml(topic)}</div>`);
+        appendChat('ai', `<div class="small muted">Let me prepare a friendly explanation... 🧸</div>`);
+        setTimeout(async ()=>{
+          const res = await getAIResponse(topic, aiMode.value);
+          const lastAI = Array.from(chatMessages.querySelectorAll('.msg.ai')).pop();
+          if(lastAI) lastAI.innerHTML = escapeHtml(String(res)).replace(/\n/g,'<br>');
+          giveStar(0);
+        }, 800);
+      });
+
+      // quick nav
+      quickChat.addEventListener('click', ()=> showPage('tutor'));
+      quickLibrary.addEventListener('click', ()=> showPage('library'));
+      quickPlanner.addEventListener('click', ()=> showPage('planner'));
+      document.getElementById('floatingMascot').addEventListener('click', ()=> showPage('tutor'));
+
+      // Videos suggestions (mock curated list)
+      const curated = {
+        math: [
+          {title:'Fun Fractions for Kids', id:'dQw4w9WgXcQ', channel:'HappyMathKids'},
+          {title:'Addition with Teddy Bears', id:'l5aQwW2xWqg', channel:'TeddyLearn'}
+        ],
+        science: [
+          {title:'Why Plants Need Water', id:'B5q3Qy1n0Qk', channel:'LittleScientists'},
+          {title:'Amazing Earth Facts', id:'qvG7h3M2w9Y', channel:'CuriousKids'}
+        ],
+        general: [
+          {title:'Study Tips for Kids', id:'a1b2c3d4e5', channel:'StudyBuddy'},
+          {title:'Mindful Breaks', id:'x9y8z7w6v5', channel:'CalmCorner'}
+        ]
+      };
+
+      btnSuggest.addEventListener('click', ()=> {
+        const topic = videoTopic.value.trim().toLowerCase();
+        const key = topic.includes('math') || topic.includes('fraction') ? 'math' : topic.includes('science') ? 'science' : 'general';
+        const list = curated[key];
+        videoList.innerHTML = list.map(v => `<div style="border-radius:12px;overflow:hidden;background:#fff;padding:6px"><div style="font-weight:700">${v.title}</div><div class="small muted">${v.channel}</div><div style="margin-top:8px"><iframe width="100%" height="160" src="https://www.youtube-nocookie.com/embed/${v.id}" title="${v.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div></div>`).join('');
+      });
+
+      // Rewards & badges
+      function giveStar(amount = 1){
+        const progress = store.get('cb_progress', { weekly: Array(7).fill(0), stars:0, streak:0 });
+        progress.stars = (progress.stars || 0) + amount;
+        progress.streak = (progress.streak || 0) + (amount>0 ? 1 : 0);
+        store.set('cb_progress', progress);
+        renderBadges();
+        renderProgress();
+      }
+
+      spendStar.addEventListener('click', ()=>{
+        const p = store.get('cb_progress', { weekly: Array(7).fill(0), stars:0, streak:0 });
+        if(p.stars > 0){
+          p.stars -= 1;
+          store.set('cb_progress', p);
+          renderBadges();
+          confettiBurst();
+          alert('Yay! You used a star to celebrate 🎉');
+        } else alert('No stars yet. Complete tasks to earn stars!');
+      });
+
+      function renderBadges(){
+        const p = store.get('cb_progress', { weekly: Array(7).fill(0), stars:0, streak:0 });
+        starDisplay.innerHTML = '';
+        for(let i=0;i<Math.min(p.stars,6);i++){
+          const s = document.createElement('div');
+          s.className='star';
+          s.textContent='⭐';
+          starDisplay.appendChild(s);
+        }
+        starCountBig.textContent = `${p.stars || 0} Stars`;
+        // badges by streak
+        const badges = [];
+        if((p.streak || 0) >= 1) badges.push({name:'Bronze Buddy', icon:'🥉'});
+        if((p.streak || 0) >= 5) badges.push({name:'Silver Scholar', icon:'🥈'});
+        if((p.streak || 0) >= 14) badges.push({name:'Gold Genius', icon:'🥇'});
+        allBadges.innerHTML = badges.map(b => `<div class="badge"><div style="font-size:20px">${b.icon}</div><div style="font-weight:800">${b.name}</div></div>`).join('');
+        starsPill.textContent = `⭐ Stars: ${p.stars || 0}`;
+        streakPill.textContent = `🔥 Streak: ${p.streak || 0} days`;
+      }
+
+      // Charts (progress)
+      let chartInstance = null;
+      function renderProgress(){
+        const p = store.get('cb_progress', { weekly: Array(7).fill(0), stars:0, streak:0 });
+        const labels = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        const data = p.weekly || Array(7).fill(0);
+        if(chartInstance) chartInstance.data.datasets[0].data = data, chartInstance.update();
+        else{
+          chartInstance = new Chart(chartCtx, {
+            type: 'line',
+            data: {
+              labels,
+              datasets: [{
+                label: 'Minutes studied',
+                data,
+                fill:true,
+                backgroundColor: 'rgba(119,221,255,0.2)',
+                borderColor: '#77ddff',
+                tension:0.35,
+                pointRadius:6
+              }]
+            },
+            options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}
+          });
+        }
+        // show today time
+        const today = new Date().getDay();
+        const mins = data[today] || 0;
+        const hours = Math.floor(mins / 60);
+        const rem = mins % 60;
+        document.getElementById('todayTime').textContent = `${hours}h ${rem}m`;
+      }
+
+      // Admin render
+      function renderAdmin(){
+        const users = store.get('cb_users', {});
+        adminUsers.innerHTML = Object.values(users).map(u => `<div style="padding:8px;border-radius:10px;margin-bottom:6px;background:linear-gradient(90deg,#fff,#fff8)"><div style="display:flex;justify-content:space-between"><div><strong>${u.username}</strong><div class="small muted">${u.role}</div></div><div><button class="btn secondary" data-user="${u.username}" data-act="impersonate">Impersonate</button> <button class="btn" data-user="${u.username}" data-act="del">Delete</button></div></div></div>`).join('');
+        adminUsers.querySelectorAll('button').forEach(b=>{
+          b.addEventListener('click', (e)=>{
+            const user = e.currentTarget.dataset.user;
+            const act = e.currentTarget.dataset.act;
+            if(act === 'impersonate'){
+              store.set('cb_session', { username: user, role: users[user].role, createdAt: Date.now() });
+              updateSessionUI();
+              alert('Now impersonating ' + user);
+            } else if(act === 'del'){
+              if(!confirm('Delete user ' + user + '?')) return;
+              delete users[user]; store.set('cb_users', users); renderAdmin();
+            }
+          });
+        });
+
+        // materials for admin
+        const mats = store.get('cb_materials', []);
+        adminMaterials.innerHTML = mats.map(m => `<div style="padding:6px;border-radius:8px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(90deg,#fff,#fff8)"><div><strong>${m.title}</strong><div class="small muted">${m.subject} • uploaded by ${m.uploadedBy}</div></div><div><button class="btn secondary" data-id="${m.id}" data-act="view">View</button> <button class="btn" data-id="${m.id}" data-act="del">Delete</button></div></div>`).join('');
+        adminMaterials.querySelectorAll('button').forEach(b=>{
+          b.addEventListener('click', (e)=>{
+            const id = e.currentTarget.dataset.id;
+            const act = e.currentTarget.dataset.act;
+            if(act === 'view'){
+              const mat = mats.find(x=>x.id===id);
+              if(mat){
+                window.open();
+              }
+            } else if(act === 'del'){
+              if(!confirm('Delete material?')) return;
+              const newM = mats.filter(x=>x.id!==id);
+              store.set('cb_materials', newM);
+              renderAdmin();
+              renderLibrary();
+            }
+          });
+        });
+      }
+
+      btnAdminRefresh.addEventListener('click', renderAdmin);
+
+      // confetti burst
+      function confettiBurst(){
+        const container = document.getElementById('confetti');
+        for(let i=0;i<30;i++){
+          const el = document.createElement('div');
+          el.style.position='absolute';
+          el.style.left = (50 + (Math.random()-0.5)*40) + '%';
+          el.style.top = (10 + Math.random()*40) + '%';
+          el.style.width = el.style.height = (6 + Math.random()*10) + 'px';
+          el.style.background = ['#ffb6c1','#ffd36e','#77ddff','#b3f7c6'][Math.floor(Math.random()*4)];
+          el.style.borderRadius = '2px';
+          el.style.opacity = '0.95';
+          el.style.transform = `translateY(0) rotate(${Math.random()*360}deg)`;
+          el.style.transition = 'transform 1.4s cubic-bezier(.17,.67,.27,1), opacity 1.4s';
+          container.appendChild(el);
+          requestAnimationFrame(()=> {
+            el.style.transform = `translateY(${200 + Math.random()*200}px) rotate(${Math.random()*720}deg)`;
+            el.style.opacity = '0';
+          });
+          setTimeout(()=> el.remove(), 1500);
+        }
+      }
+
+      // small helpers
+      function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+      // Theme toggle
+      themeToggle.addEventListener('click', ()=>{
+        const current = store.get('cb_theme','light');
+        const next = current === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+        alert(`Theme switched to ${next}`);
+      });
+
+      // Download all materials
+      document.getElementById('btnDownloadAll').addEventListener('click', ()=>{
+        const mats = store.get('cb_materials', []);
+        if(mats.length === 0) return alert('No materials to download.');
+        const zipNote = mats.map(m => `${m.title} (${m.subject})`).join('\n');
+        alert('Downloading not zipped in demo. Materials:\n' + zipNote);
+      });
+
+      // Add to home screen (PWA prompt)
+      let deferredPrompt = null;
+      window.addEventListener('beforeinstallprompt', (e)=>{
+        e.preventDefault();
+        deferredPrompt = e;
+        const btn = document.createElement('button');
+        btn.className = 'btn';
+        btn.textContent = 'Add to Home Screen';
+        btn.addEventListener('click', async ()=>{
+          if(!deferredPrompt) return;
+          deferredPrompt.prompt();
+          const choice = await deferredPrompt.userChoice;
+          if(choice.outcome === 'accepted') alert('Thanks! Install accepted.');
+          deferredPrompt = null;
+        });
+        document.querySelector('.controls').appendChild(btn);
+      });
+
+      // Simple service worker registration inline via blob (caching few assets)
+      if('serviceWorker' in navigator){
+        const swCode = `
+          const CACHE = 'crybaby-cache-v1';
+          self.addEventListener('install', e => {
+            self.skipWaiting();
+            e.waitUntil(caches.open(CACHE).then(c => c.addAll(['./'])));
+          });
+          self.addEventListener('activate', e => { e.waitUntil(self.clients.claim()); });
+          self.addEventListener('fetch', e => {
+            if(e.request.method !== 'GET') return;
+            e.respondWith(caches.match(e.request).then(r => r || fetch(e.request).catch(()=>caches.match('./'))));
+          });
+        `;
+        const blob = new Blob([swCode], {type:'application/javascript'});
+        navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(err => console.log('SW failed', err));
+      }
+
+      // Init app
+      renderWeek();
+      renderLibrary();
+      renderTasks();
+      renderProgress();
+      renderBadges();
+      updateSessionUI();
+
+      // small initial guide
+      setTimeout(()=> {
+        if(!session) authModal.style.display = 'flex';
+      }, 800);
+
+      // Simple SEO microdata (client-side)
+      document.querySelector('head').insertAdjacentHTML('beforeend', '<meta name="robots" content="index,follow">');
+
+      // Make data persist across logins: save theme in user profile (on login)
+      // When user logs in, optionally apply saved preference (not implemented server-side in demo)
+
+      // expose some debug to window for testing
+      window.Crybaby = {
+        store, giveStar, renderLibrary, renderTasks, renderProgress
+      };
+
+      // Small UX: keyboard send
+      chatInput.addEventListener('keydown', (e)=>{
+        if(e.key === 'Enter') sendMsg.click();
+      });
+
+    })();
+  </script>
+</body>
+</html>

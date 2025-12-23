@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRYBABYFINAL - Your Magical Study Companion 🌟</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Segoe UI', cursive;
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #ffc6ff 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        .dark-gradient-bg {
+            background: linear-gradient(135deg, #1a1c3d 0%, #2d1b69 25%, #4a0e4e 50%, #2e1437 75%, #0f0c29 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .cute-shadow {
+            box-shadow: 0 10px 25px rgba(255, 182, 193, 0.3);
+        }
+
+        .bounce {
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
+
+        .float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .sparkle {
+            animation: sparkle 1.5s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .typing {
+            border-right: 3px solid #f093fb;
+            animation: typing 1s steps(40) infinite;
+        }
+
+        @keyframes typing {
+            0%, 100% { border-color: transparent; }
+            50% { border-color: #f093fb; }
+        }
+
+        .rainbow-text {
+            background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcf7f, #4ecdc4, #a06cd5, #ff6b6b);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow 3s linear infinite;
+        }
+
+        @keyframes rainbow {
+            to { background-position: 200% center; }
+        }
+
+        .dark-mode {
+            background-color: #1a1a2e;
+            color: #eee;
+        }
+
+        .dark-mode .card {
+            background-color: #16213e;
+            color: #eee;
+        }
+
+        .mascot {
+            width: 60px;
+            height: 60px;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            cursor: pointer;
+        }
+
+        .star-earned {
+            animation: starPop 0.5s ease-out;
+        }
+
+        @keyframes starPop {
+            0% { transform: scale(0) rotate(0deg); }
+            50% { transform: scale(1.2) rotate(180deg); }
+            100% { transform: scale(1) rotate(360deg); }
+        }
+
+        .page-transition {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .loader {
+            border: 4px solid rgba(255, 182, 193, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #ff69b4;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 182, 193, 0.1);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            border-radius: 10px;
+        }
+
+        .cute-btn {
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            transition: all 0.3s;
+        }
+
+        .cute-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(255, 105, 180, 0.3);
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <!-- Login Screen -->
+    <div id="loginScreen" class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white/95 backdrop-blur-lg rounded-3xl p-8 max-w-md w-full cute-shadow card-hover">
+            <div class="text-center mb-8">
+                <div class="text-6xl mb-4 bounce">🧸</div>
+                <h1 class="text-3xl font-bold rainbow-text mb-2">CRYBABYFINAL</h1>
+                <p class="text-pink-600">Your Magical Study Companion ✨</p>
+            </div>
+            
+            <div id="loginForm">
+                <h2 class="text-2xl font-bold text-center mb-6 text-purple-700">Welcome Back! 💕</h2>
+                <input type="text" id="loginUsername" placeholder="Username 🦄" class="w-full p-3 mb-4 border-2 border-pink-300 rounded-xl focus:outline-none focus:border-purple-400">
+                <input type="password" id="loginPassword" placeholder="Password 🔐" class="w-full p-3 mb-4 border-2 border-pink-300 rounded-xl focus:outline-none focus:border-purple-400">
+                <button onclick="login()" class="w-full cute-btn text-white py-3 px-6 rounded-xl font-bold">Login 🌟</button>
+                <p class="text-center mt-4 text-purple-600 cursor-pointer" onclick="toggleAuth()">New here? Sign up! 🎀</p>
+            </div>
+            
+            <div id="signupForm" class="hidden">
+                <h2 class="text-2xl font-bold text-center mb-6 text-purple-700">Join the Fun! 🎉</h2>
+                <input type="text" id="signupUsername" placeholder="Choose Username 🦄" class="w-full p-3 mb-4 border-2 border-pink-300 rounded-xl focus:outline-none focus:border-purple-400">
+                <input type="password" id="signupPassword" placeholder="Create Password 🔐" class="w-full p-3 mb-4 border-2 border-pink-300 rounded-xl focus:outline-none focus:border-purple-400">
+                <select id="userRole" class="w-full p-3 mb-4 border-2 border-pink-300 rounded-xl focus:outline-none focus:border-purple-400">
+                    <option value="student">Student 📚</option>
+                    <option value="parent">Parent/Admin 👨‍👩‍👧</option>
+                </select>
+                <button onclick="signup()" class="w-full cute-btn text-white py-3 px-6 rounded-xl font-bold">Sign Up 🌈</button>
+                <p class="text-center mt-4 text-purple-600 cursor-pointer" onclick="toggleAuth()">Already have account? Login! 💖</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard" class="hidden min-h-screen">
+        <!-- Navigation Bar -->
+        <nav class="bg-white/90 backdrop-blur-lg shadow-lg sticky top-0 z-50">
+            <div class="container mx-auto px-4 py-3">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <span class="text-3xl">🧸</span>
+                        <h1 class="text-2xl font-bold rainbow-text">CRYBABYFINAL</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-2xl sparkle">⭐</span>
+                            <span id="starCount" class="text-xl font-bold text-purple-700">0</span>
+                        </div>
+                        <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-pink-100">
+                            <span id="themeIcon">🌙</span>
+                        </button>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-lg">👧</span>
+                            <span id="userDisplay" class="font-semibold text-purple-700">Student</span>
+                        </div>
+                        <button onclick="logout()" class="cute-btn text-white px-4 py-2 rounded-xl text-sm">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Tab Navigation -->
+        <div class="bg-white/80 backdrop-blur-md shadow-md sticky top-16 z-40">
+            <div class="container mx-auto px-4">
+                <div class="flex space-x-2 overflow-x-auto py-3">
+                    <button onclick="showSection('home')" class="tab-btn px-6 py-2 rounded-full bg-pink-500 text-white font-semibold whitespace-nowrap">🏠 Home</button>
+                    <button onclick="showSection('library')" class="tab-btn px-6 py-2 rounded-full bg-purple-100 text-purple-700 font-semibold whitespace-nowrap">📚 Library</button>
+                    <button onclick="showSection('ai')" class="tab-btn px-6 py-2 rounded-full bg-purple-100 text-purple-700 font-semibold whitespace-nowrap">🤖 AI Helper</button>
+                    <button onclick="showSection('videos')" class="tab-btn px-6 py-2 rounded-full bg-purple-100 text-purple-700 font-semibold whitespace-nowrap">▶️ Videos</button>
+                    <button onclick="showSection('planner')" class="tab-btn px-6 py-2 rounded-full bg-purple-100 text-purple-700 font-semibold whitespace-nowrap">📅 Planner</button>
+                    <button onclick="showSection('progress')" class="tab-btn px-6 py-2 rounded-full bg-purple-100 text-purple-700 font-semibold whitespace-nowrap">📊 Progress</button>
+                    <button onclick="showSection('rewards')" class="tab-btn px-6 py-2 rounded-full bg-purple-100 text-purple-700 font-semibold whitespace-nowrap">🏆 Rewards</button>
+                    <button id="adminTab" onclick="showSection('admin')" class="tab-btn px-6 py-2 rounded-full bg-purple-100 text-purple-700 font-semibold whitespace-nowrap hidden">👨‍👩‍👧 Admin</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Sections -->
+        <div class="container mx-auto px-4 py-8">
+            <!-- Home Section -->
+            <div id="homeSection" class="section page-transition">
+                <div class="text-center mb-8">
+                    <h2 class="text-4xl font-bold text-white mb-4">Welcome Back, Superstar! 🌟</h2>
+                    <p class="text-xl text-white/90">Ready to learn something amazing today?</p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white/95 rounded-2xl p-6 card-hover cute-shadow">
+                        <div class="text-4xl mb-4 float">📖</div>
+                        <h3 class="text-xl font-bold text-purple-700 mb-2">Today's Goal</h3>
+                        <p class="text-gray-600">Complete 2 study sessions</p>
+                        <div class="mt-4 bg-pink-100 rounded-xl p-2">
+                            <div class="bg-pink-500 h-3 rounded-xl" style="width: 50%"></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white/95 rounded-2xl p-6 card-hover cute-shadow">
+                        <div class="text-4xl mb-4 float">⭐</div>
+                        <h3 class="text-xl font-bold text-purple-700 mb-2">Stars Earned</h3>
+                        <p class="text-3xl font-bold text-pink-600">12</p>
+                        <p class="text-sm text-gray-600 mt-2">Keep going! 🚀</p>
+                    </div>
+
+                    <div class="bg-white/95 rounded-2xl p-6 card-hover cute-shadow">
+                        <div class="text-4xl mb-4 float">🔥</div>
+                        <h3 class="text-xl font-bold text-purple-700 mb-2">Study Streak</h3>
+                        <p class="text-3xl font-bold text-orange-600">3 Days</p>
+                        <p class="text-sm text-gray-600 mt-2">Amazing job! 🎉</p>
+                    </div>
+                </div>
+
+                <div class="bg-white/95 rounded-2xl p-6 cute-shadow">
+                    <h3 class="text-2xl font-bold text-purple-700 mb-4">Quick Actions 🚀</h3>
+                    <div class="grid md:grid-cols-4 gap-4">
+                        <button onclick="showSection('ai')" class="p-4 bg-gradient-to-r from-purple-400 to-pink-400 text-white rounded-xl hover:scale-105 transition">
+                            <span class="text-2xl">🤖</span>
+                            <p class="mt-2 font-semibold">Ask AI</p>
+                        </button>
+                        <button onclick="showSection('library')" class="p-4 bg-gradient-to-r from-blue-400 to-cyan-400 text-white rounded-xl hover:scale-105 transition">
+                            <span class="text-2xl">📚</span>
+                            <p class="mt-2 font-semibold">Read Books</p>
+                        </button>
+                        <button onclick="showSection('videos')" class="p-4 bg-gradient-to-r from-red-400 to-orange-400 text-white rounded-xl hover:scale-105 transition">
+                            <span class="text-2xl">▶️</span>
+                            <p class="mt-2 font-semibold">Watch Videos</p>
+                        </button>
+                        <button onclick="showSection('planner')" class="p-4 bg-gradient-to-r from-green-400 to-teal-400 text-white rounded-xl hover:scale-105 transition">
+                            <span class="text-2xl">📅</span>
+                            <p class="mt-2 font-semibold">Plan Study</p>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Library Section -->
+            <div id="librarySection" class="section hidden page-transition">
+                <h2 class="text-3xl font-bold text-white mb-6">📚 My Library</h2>
+                
+                <div class="bg-white/95 rounded-2xl p-6 mb-6 cute-shadow">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold text-purple-700">Upload New Book</h3>
+                        <button onclick="uploadBook()" class="cute-btn text-white px-4 py-2 rounded-xl">
+                            <i class="fas fa-upload mr-2"></i>Upload
+                        </button>
+                    </div>
+                    <input type="file" id="fileUpload" accept=".pdf,.doc,.docx" class="hidden">
+                    <div class="border-2 border-dashed border-pink-300 rounded-xl p-8 text-center hover:border-purple-400 transition cursor-pointer" onclick="document.getElementById('fileUpload').click()">
+                        <span class="text-4xl">📤</span>
+                        <p class="mt-2 text-gray-600">Click to upload or drag and drop</p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="bg-white/95 rounded-2xl p-6 card-hover cute-shadow">
+                        <div class="text-4xl mb-4">📘</div>
+                        <h4 class="font-bold text-purple-700 mb-2">Mathematics</h4>
+                        <p class="text-sm text-gray-600 mb-4">Chapter 1: Numbers</p>
+                        <button class="w-full bg-pink-500 text-white py-2 rounded-xl hover:bg-pink-600">Read Now</button>
+                    </div>
+                    <div class="bg-white/95 rounded-2xl p-6 card-hover cute-shadow">
+                        <div class="text-4xl mb-4">📗</div>
+                        <h4 class="font-bold text-purple-700 mb-2">Science</h4>
+                        <p class="text-sm text-gray-600 mb-4">The Solar System</p>
+                        <button class="w-full bg-pink-500 text-white py-2 rounded-xl hover:bg-pink-600">Read Now</button>
+                    </div>
+                    <div class="bg-white/95 rounded-2xl p-6 card-hover cute-shadow">
+                        <div class="text-4xl mb-4">📙</div>
+                        <h4 class="font-bold text-purple-700 mb-2">English</h4>
+                        <p class="text-sm text-gray-600 mb-4">Story: The Little Princess</p>
+                        <button class="w-full bg-pink-500 text-white py-2 rounded-xl hover:bg-pink-600">Read Now</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Helper Section -->
+            <div id="aiSection" class="section hidden page-transition">
+                <h2 class="text-3xl font-bold text-white mb-6">🤖 AI Study Helper</h2>
+                
+                <div class="bg-white/95 rounded-2xl p-6 cute-shadow">
+                    <div class="h-96 overflow-y-auto mb-4 p-4 bg-pink-50 rounded-xl" id="chatContainer">
+                        <div class="flex items-start mb-4">
+                            <span class="text-3xl mr-3">🤖</span>
+                            <div class="bg-white p-3 rounded-xl max-w-md">
+                                <p class="text-purple-700">Hi there! I'm your friendly AI helper! 🌟 What would you like to learn today?</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-2">
+                        <input type="text" id="aiInput" placeholder="Ask me anything! 💭" class="flex-1 p-3 border-2 border-pink-300 rounded-xl focus:outline-none focus:border-purple-400">
+                        <button onclick="sendAIMessage()" class="cute-btn text-white px-6 py-3 rounded-xl">
+                            Send ✨
+                        </button>
+                    </div>
+
+                    <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-2">
+                        <button onclick="quickQuestion('Math')" class="p-2 bg-purple-100 text-purple-700 rounded-xl hover:bg-purple-200">Help with Math 🔢</button>
+                        <button onclick="quickQuestion('Science')" class="p-2 bg-blue-100 text-blue-700 rounded-xl hover:bg-blue-200">Science Facts 🔬</button>
+                        <button onclick="quickQuestion('Homework')" class="p-2 bg-green-100 text-green-700 rounded-xl hover:bg-green-200">Homework Help 📝</button>
+                        <button onclick="quickQuestion('Story')" class="p-2 bg-pink-100 text-pink-700 rounded-xl hover:bg-pink-200">Tell a Story 📖</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Videos Section -->
+            <div id="videosSection" class="section hidden page-transition">
+                <h2 class="text-3xl font-bold text-white mb-6">▶️ Educational Videos</h2>
+                
+                <div class="bg-white/95 rounded-2xl p-6 mb-6 cute-shadow">
+                    <input type="text" id="videoSearch" placeholder="Search for educational videos... 🔍" class="w-full p-3 border-2 border-pink-300 rounded-xl focus:outline-none focus:border-purple-400">
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-white/95 rounded-2xl p-6 card-hover cute-shadow">
+                        <div class="bg-gray-200 rounded-xl h-48 flex items-center justify-center mb-4">
+                            <span class="text-6xl">▶️</span>
+                        </div>
+                        <h4 class="font-bold text-purple-700 mb-2">Fun with Numbers!</h4>
+                        <p class="text-sm text-gray-600 mb-2">Learn counting 1-100</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-pink-600">⏰ 10 mins</span>
+                            <button class="bg-pink-500 text-white px-4 py-1 rounded-xl text-sm hover:bg-pink-600">Watch</button>
+                        </div>
+                    </div>
+                    <div class="bg-white/95 rounded-2xl p-6 card-hover cute-shadow">
+                        <div class="bg-gray-200 rounded-xl h-48 flex items-center justify-center mb-4">
+                            <span class="text-6xl">▶️</span>
+                        </div>
+                        <h4 class="font-bold text-purple-700 mb-2">Amazing Space Journey</h4>
+                        <p class="text-sm text-gray-600 mb-2">Explore the planets</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-pink-600">⏰ 15 mins</span>
+                            <button class="bg-pink-500 text-white px-4 py-1 rounded-xl text-sm hover:bg-pink-600">Watch</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Study Planner Section -->
+            <div id="plannerSection" class="section hidden page-transition">
+                <h2 class="text-3xl font-bold text-white mb-6">📅 Study Planner</h2>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-white/95 rounded-2xl p-6 cute-shadow">
+                        <h3 class="text-xl font-bold text-purple-700 mb-4">Today's Schedule</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center p-3 bg-pink-50 rounded-xl">
+                                <input type="checkbox" class="mr-3 w-5 h-5">
+                                <div class="flex-1">
+                                    <p class="font-semibold text-purple-700">Math Practice</p>
+                                    <p class="text-sm text-gray-600">3:00 PM - 3:30 PM</p>
+                                </div>
+                                <span class="text-2xl">📐</span>
+                            </div>
+                            <div class="flex items-center p-3 bg-blue-50 rounded-xl">
+                                <input type="checkbox" class="mr-3 w-5 h-5">
+                                <div class="flex-1">
+                                    <p class="font-semibold text-purple-700">Science Reading</p>
+                                    <p class="text-sm text-gray-600">4:00 PM - 4:30 PM</p>
+                                </div>
+                                <span class="text-2xl">🔬</span>
+                            </div>
+                            <div class="flex items-center p-3 bg-green-50 rounded-xl">
+                                <input type="checkbox" class="mr-3 w-5 h-5">
+                                <div class="flex-1">
+                                    <p class="font-semibold text-purple-700">English Story</p>
+                                    <p class="text-sm text-gray-600">5:00 PM - 5:30 PM</p>
+                                </div>
+                                <span class="text-2xl">📖</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white/95 rounded-2xl p-6 cute-shadow">
+                        <h3 class="text-xl font-bold text-purple-700 mb-4">Add New Task</h3>
+                        <input type="text" placeholder="Task name 📝" class="w-full p-3 mb-3 border-2 border-pink-300 rounded-xl focus:outline-none focus:border-purple-400">
+                        <select class="w-full p-3 mb-3 border-2 border-pink-300 rounded-xl focus:outline-none focus:border-purple-400">
+                            <option>Math 📐</option>
+                            <option>Science 🔬</option>
+                            <option>English 📖</option>
+                            <option>History 🏛️</option>
+                        </select>
+                        <input type="time" class="w-full p-3 mb-3 border-2 border-pink-300 rounded-xl focus:outline-none focus:border-purple-400">
+                        <button class="w-full cute-btn text-white py-3 rounded-xl">Add Task ✨</button>
+                    </div>
+                </div>
+
+                <div class="bg-white/95 rounded-2xl p-6 mt-6 cute-shadow">
+                    <h3 class="text-xl font-bold text-purple-700 mb-4">Upcoming Exams 📝</h3>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="p-4 bg-yellow-50 rounded-xl text-center">
+                            <span class="text-3xl">📊</span>
+                            <p class="font-bold text-purple-700 mt-2">Math Test</p>
+                            <p class="text-sm text-gray-600">Dec 25, 2024</p>
+                        </div>
+                        <div class="p-4 bg-green-50 rounded-xl text-center">
+                            <span class="text-3xl">🌱</span>
+                            <p class="font-bold text-purple-700 mt-2">Science Quiz</p>
+                            <p class="text-sm text-gray-600">Dec 28, 2024</p>
+                        </div>
+                        <div class="p-4 bg-blue-50 rounded-xl text-center">
+                            <span class="text-3xl">✍️</span>
+                            <p class="font-bold text-purple-700 mt-2">English Essay</p>
+                            <p class="text-sm text-gray-600">Jan 2, 2025</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Section -->
+            <div id="progressSection" class="section hidden page-transition">
+                <h2 class="text-3xl font-bold text-white mb-6">📊 My Progress</h2>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-white/95 rounded-2xl p-6 cute-shadow">
+                        <h3 class="text-xl font-bold text-purple-700 mb-4">Weekly Study Hours</h3>
+                        <canvas id="weeklyChart"></canvas>
+                    </div>
+
+                    <div class="bg-white/95 rounded-2xl p-6 cute-shadow">
+                        <h3 class="text-xl font-bold text-purple-700 mb-4">Subject Progress</h3>
+                        <canvas id="subjectChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white/95 rounded-2xl p-6 mt-6 cute-shadow">
+                    <h3 class="text-xl font-bold text-purple-700 mb-4">Achievement Stats 🏆</h3>
+                    <div class="grid md:grid-cols-4 gap-4">
+                        <div class="text-center">
+                            <div class="text-4xl mb-2">📚</div>
+                            <p class="text-2xl font-bold text-pink-600">23</p>
+                            <p class="text-sm text-gray-600">Books Read</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl mb-2">⏰</div>
+                            <p class="text-2xl font-bold text-purple-600">45h</p>
+                            <p class="text-sm text-gray-600">Study Time</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl mb-2">✅</div>
+                            <p class="text-2xl font-bold text-green-600">89</p>
+                            <p class="text-sm text-gray-600">Tasks Done</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl mb-2">🔥</div>
+                            <p class="text-2xl font-bold text-orange-600">7</p>
+                            <p class="text-sm text-gray-600">Day Streak</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rewards Section -->
+            <div id="rewardsSection" class="section hidden page-transition">
+                <h2 class="text-3xl font-bold text-white mb-6">🏆 My Rewards</h2>
+                
+                <div class="bg-white/95 rounded-2xl p-6 mb-6 cute-shadow">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-purple-700">Star Collection</h3>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-3xl">⭐</span>
+                            <span class="text-2xl font-bold text-pink-600">156</span>
+                        </div>
+                    </div>
+                    <div class="bg-gray-200 rounded-full h-6">
+                        <div class="bg-gradient-to-r from-yellow-400 to-orange-400 h-6 rounded-full" style="width: 65%"></div>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-2">44 stars to next reward!</p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-white/95 rounded-2xl p-6 text-center card-hover cute-shadow">
+                        <div class="text-6xl mb-4">🥉</div>
+                        <h4 class="font-bold text-purple-700">Bronze Badge</h4>
+                        <p class="text-sm text-gray-600 mt-2">First 10 stars</p>
+                        <div class="mt-4">
+                            <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm">Earned! ✓</span>
+                        </div>
+                    </div>
+                    <div class="bg-white/95 rounded-2xl p-6 text-center card-hover cute-shadow">
+                        <div class="text-6xl mb-4">🥈</div>
+                        <h4 class="font-bold text-purple-700">Silver Badge</h4>
+                        <p class="text-sm text-gray-600 mt-2">50 stars collected</p>
+                        <div class="mt-4">
+                            <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm">Earned! ✓</span>
+                        </div>
+                    </div>
+                    <div class="bg-white/95 rounded-2xl p-6 text-center card-hover cute-shadow opacity-75">
+                        <div class="text-6xl mb-4">🥇</div>
+                        <h4 class="font-bold text-purple-700">Gold Badge</h4>
+                        <p class="text-sm text-gray-600 mt-2">200 stars needed</p>
+                        <div class="mt-4">
+                            <span class="bg-gray-300 text-gray-600 px-3 py-1 rounded-full text-sm">Locked 🔒</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white/95 rounded-2xl p-6 cute-shadow">
+                    <h3 class="text-xl font-bold text-purple-700 mb-4">Special Achievements 🌟</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="flex items-center p-3 bg-pink-50 rounded-xl">
+                            <span class="text-3xl mr-3">📖</span>
+                            <div>
+                                <p class="font-semibold text-purple-700">Bookworm</p>
+                                <p class="text-sm text-gray-600">Read 20 books</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center p-3 bg-blue-50 rounded-xl">
+                            <span class="text-3xl mr-3">🎯</span>
+                            <div>
+                                <p class="font-semibold text-purple-700">Goal Getter</p>
+                                <p class="text-sm text-gray-600">Complete all daily tasks for a week</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Section -->
+            <div id="adminSection" class="section hidden page-transition">
+                <h2 class="text-3xl font-bold text-white mb-6">👨‍👩‍👧 Parent Dashboard</h2>
+                
+                <div class="grid md:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-white/95 rounded-2xl p-6 cute-shadow">
+                        <h4 class="font-bold text-purple-700 mb-2">Study Time Today</h4>
+                        <p class="text-3xl font-bold text-pink-600">2h 30m</p>
+                        <p class="text-sm text-green-600 mt-2">↑ 15% from yesterday</p>
+                    </div>
+                    <div class="bg-white/95 rounded-2xl p-6 cute-shadow">
+                        <h4 class="font-bold text-purple-700 mb-2">Tasks Completed</h4>
+                        <p class="text-3xl font-bold text-blue-600">8/10</p>
+                        <p class="text-sm text-gray-600 mt-2">Great progress!</p>
+                    </div>
+                    <div class="bg-white/95 rounded-2xl p-6 cute-shadow">
+                        <h4 class="font-bold text-purple-700 mb-2">AI Questions</h4>
+                        <p class="text-3xl font-bold text-purple-600">15</p>
+                        <p class="text-sm text-gray-600 mt-2">Active learning!</p>
+                    </div>
+                </div>
+
+                <div class="bg-white/95 rounded-2xl p-6 cute-shadow">
+                    <h3 class="text-xl font-bold text-purple-700 mb-4">Content Management</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                            <div>
+                                <p class="font-semibold">Mathematics Book - Grade 5</p>
+                                <p class="text-sm text-gray-600">Uploaded: Dec 20, 2024</p>
+                            </div>
+                            <button class="text-red-500 hover:bg-red-50 p-2 rounded">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                            <div>
+                                <p class="font-semibold">Science Workbook</p>
+                                <p class="text-sm text-gray-600">Uploaded: Dec 18, 2024</p>
+                            </div>
+                            <button class="text-red-500 hover:bg-red-50 p-2 rounded">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button class="mt-4 cute-btn text-white px-6 py-2 rounded-xl">
+                        <i class="fas fa-plus mr-2"></i>Add Content
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Mascot -->
+    <div class="mascot float" onclick="showMotivation()">
+        <span style="font-size: 60px;">🧸</span>
+    </div>
+
+    <script>
+        // Global Variables
+        let currentUser = null;
+        let isDarkMode = false;
+        let stars = 0;
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+
+        // Authentication Functions
+        function toggleAuth() {
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            loginForm.classList.toggle('hidden');
+            signupForm.classList.toggle('hidden');
+        }
+
+        function signup() {
+            const username = document.getElementById('signupUsername').value;
+            const password = document.getElementById('signupPassword').value;
+            const role = document.getElementById('userRole').value;
+
+            if (!username || !password) {
+                alert('Please fill in all fields! 🌟');
+                return;
+            }
+
+            const newUser = { username, password, role, stars: 0, badges: [] };
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            showNotification('Account created successfully! 🎉');
+            toggleAuth();
+        }
+
+        function login() {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (!username || !password) {
+                alert('Please enter your credentials! 💕');
+                return;
+            }
+
+            // Demo login (in real app, this would verify against database)
+            currentUser = { username, role: username === 'admin' ? 'parent' : 'student' };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            document.getElementById('userDisplay').textContent = username;
+            
+            if (currentUser.role === 'parent') {
+                document.getElementById('adminTab').classList.remove('hidden');
+            }
+            
+            loadUserData();
+            showNotification('Welcome back! 🌟');
+            earnStars(5);
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('dashboard').classList.add('hidden');
+        }
+
+        function loadUserData() {
+            // Load user preferences and data
+            const savedStars = localStorage.getItem('userStars') || 0;
+            stars = parseInt(savedStars);
+            updateStarDisplay();
+            
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                toggleTheme();
+            }
+        }
+
+        // Theme Toggle
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode');
+            document.body.classList.toggle('gradient-bg');
+            document.body.classList.toggle('dark-gradient-bg');
+            document.getElementById('themeIcon').textContent = isDarkMode ? '☀️' : '🌙';
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+        }
+
+        // Section Navigation
+        function showSection(sectionName) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => section.classList.add('hidden'));
+            
+            document.getElementById(sectionName + 'Section').classList.remove('hidden');
+            
+            // Update tab buttons
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            tabButtons.forEach(btn => {
+                btn.classList.remove('bg-pink-500', 'text-white');
+                btn.classList.add('bg-purple-100', 'text-purple-700');
+            });
+            
+            event.target.classList.remove('bg-purple-100', 'text-purple-700');
+            event.target.classList.add('bg-pink-500', 'text-white');
+
+            // Initialize charts if progress section
+            if (sectionName === 'progress') {
+                setTimeout(initCharts, 100);
+            }
+        }
+
+        // Star System
+        function earnStars(amount) {
+            stars += amount;
+            localStorage.setItem('userStars', stars);
+            updateStarDisplay();
+            
+            // Star animation
+            const starDisplay = document.getElementById('starCount');
+            starDisplay.classList.add('star-earned');
+            setTimeout(() => starDisplay.classList.remove('star-earned'), 500);
+            
+            showNotification(`You earned ${amount} stars! ⭐`);
+        }
+
+        function updateStarDisplay() {
+            document.getElementById('starCount').textContent = stars;
+        }
+
+        // AI Chat Functions
+        function sendAIMessage() {
+            const input = document.getElementById('aiInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            const chatContainer = document.getElementById('chatContainer');
+            
+            // Add user message
+            chatContainer.innerHTML += `
+                <div class="flex items-start mb-4 justify-end">
+                    <div class="bg-purple-200 p-3 rounded-xl max-w-md">
+                        <p class="text-purple-700">${message}</p>
+                    </div>
+                    <span class="text-3xl ml-3">👧</span>
+                </div>
+            `;
+            
+            // Simulate AI response
+            setTimeout(() => {
+                const aiResponse = getAIResponse(message);
+                chatContainer.innerHTML += `
+                    <div class="flex items-start mb-4">
+                        <span class="text-3xl mr-3">🤖</span>
+                        <div class="bg-white p-3 rounded-xl max-w-md">
+                            <p class="text-purple-700">${aiResponse}</p>
+                        </div>
+                    </div>
+                `;
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+                earnStars(1);
+            }, 1000);
+            
+            input.value = '';
+        }
+
+        function getAIResponse(question) {
+            const responses = {
+                'math': "Math is super fun! 🎯 Let me help you understand it better. What specific topic would you like to learn about?",
+                'science': "Science is amazing! 🔬 Did you know that butterflies taste with their feet? What would you like to explore?",
+                'homework': "I'd love to help with your homework! 📚 Tell me what subject you're working on and I'll guide you step by step!",
+                'default': "That's a great question! 🌟 Let me think about that and help you learn something new today!"
+            };
+            
+            const lowerQuestion = question.toLowerCase();
+            for (const key in responses) {
+                if (lowerQuestion.includes(key)) {
+                    return responses[key];
+                }
+            }
+            return responses.default;
+        }
+
+        function quickQuestion(topic) {
+            document.getElementById('aiInput').value = `Help me with ${topic}`;
+            sendAIMessage();
+        }
+
+        // Charts
+        function initCharts() {
+            // Weekly Chart
+            const weeklyCtx = document.getElementById('weeklyChart');
+            if (weeklyCtx) {
+                new Chart(weeklyCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                        datasets: [{
+                            label: 'Study Hours',
+                            data: [2, 1.5, 2.5, 2, 3, 1, 2],
+                            backgroundColor: 'rgba(255, 105, 180, 0.5)',
+                            borderColor: 'rgba(255, 105, 180, 1)',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Subject Chart
+            const subjectCtx = document.getElementById('subjectChart');
+            if (subjectCtx) {
+                new Chart(subjectCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Math', 'Science', 'English', 'History'],
+                        datasets: [{
+                            data: [30, 25, 25, 20],
+                            backgroundColor: [
+                                'rgba(255, 105, 180, 0.7)',
+                                'rgba(147, 51, 234, 0.7)',
+                                'rgba(59, 130, 246, 0.7)',
+                                'rgba(34, 197, 94, 0.7)'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true
+                    }
+                });
+            }
+        }
+
+        // Utility Functions
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-20 right-4 bg-white p-4 rounded-xl shadow-lg z-50 flex items-center space-x-3 page-transition';
+            notification.innerHTML = `
+                <span class="text-2xl">🎉</span>
+                <p class="text-purple-700 font-semibold">${message}</p>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        function showMotivation() {
+            const motivations = [
+                "You're doing amazing! 🌟",
+                "Keep up the great work! 💪",
+                "You're a superstar! ⭐",
+                "Learning is fun! 🎉",
+                "You got this! 🚀"
+            ];
+            const random = motivations[Math.floor(Math.random() * motivations.length)];
+            showNotification(random);
+        }
+
+        function uploadBook() {
+            showNotification('Book uploaded successfully! 📚');
+            earnStars(3);
+        }
+
+        // Initialize
+        window.onload = function() {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
+                document.getElementById('userDisplay').textContent = currentUser.username;
+                
+                if (currentUser.role === 'parent') {
+                    document.getElementById('adminTab').classList.remove('hidden');
+                }
+                
+                loadUserData();
+            }
+        };
+
+        // PWA Support
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').then(registration => {
+                    console.log('ServiceWorker registration successful');
+                }).catch(err => {
+                    console.log('ServiceWorker registration failed');
+                });
+            });
+        }
+    </script>
+</body>
+</html>

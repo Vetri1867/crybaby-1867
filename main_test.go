@@ -8,21 +8,24 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
+	"sync/atomic"
 	"testing"
 	"time"
 )
 
-// statusHandler is an http.Handler that writes an empty response using itself
-// as the response status code.
-type statusHandler int
+// statusHandler is an http.Handler that writes an empty response using a
+// status code that can be updated atomically.
+type statusHandler struct {
+	code int32
+}
 
 func (h *statusHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(int(*h))
+	w.WriteHeader(int(atomic.LoadInt32(&h.code)))
 }
 
 func TestIsTagged(t *testing.T) {
 	// Set up a fake "Google Code" web server reporting 404 not found.
-	status := statusHandler(http.StatusNotFound)
+	status := statusHandler{code: http.StatusNotFound}
 	s := httptest.NewServer(&status)
 	defer s.Close()
 
@@ -31,7 +34,7 @@ func TestIsTagged(t *testing.T) {
 	}
 
 	// Change fake server status to 200 OK and try again.
-	status = http.StatusOK
+	atomic.StoreInt32(&status.code, http.StatusOK)
 
 	if !isTagged(s.URL) {
 		t.Fatal("isTagged == false, want true")
@@ -39,7 +42,7 @@ func TestIsTagged(t *testing.T) {
 }
 
 func TestIntegration(t *testing.T) {
-	status := statusHandler(http.StatusNotFound)
+	status := statusHandler{code: http.StatusNotFound}
 	ts := httptest.NewServer(&status)
 	defer ts.Close()
 
@@ -73,7 +76,7 @@ func TestIntegration(t *testing.T) {
 		t.Fatalf("body = %s, want no", b)
 	}
 
-	status = http.StatusOK
+	atomic.StoreInt32(&status.code, http.StatusOK)
 
 	<-sleep // Permit poll loop to stop sleeping.
 	<-done  // Wait for poller to see the "OK" status and exit.

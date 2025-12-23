@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>CryBaby Study Room</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+</head>
+<body>
+
+    <!-- LOADER -->
+    <div id="loader">
+        <lottie-player src="animations/loader.json" autoplay loop style="width:200px;height:200px;"></lottie-player>
+        <p>Preparing your study room...</p>
+    </div>
+
+    <!-- APP -->
+    <div id="appContent" class="hidden">
+        <header>🧸 CryBaby Study Room</header>
+
+        <div class="container">
+
+            <!-- AUTH -->
+            <div class="card" id="authCard">
+                <h2>Login / Signup</h2>
+                <input id="email" type="email" placeholder="Email">
+                <input id="password" type="password" placeholder="Password">
+                <select id="role">
+                    <option value="student">Student</option>
+                    <option value="parent">Parent</option>
+                </select>
+                <button id="signupBtn">Sign Up</button>
+                <button id="loginBtn">Login</button>
+            </div>
+
+            <!-- STUDENT -->
+            <div class="card hidden" id="studentPanel">
+                <h2>📚 Student Dashboard</h2>
+                <p>Welcome student!</p>
+                <div id="booksListStudent"></div>
+                <button id="logoutBtnStudent">Logout</button>
+            </div>
+
+            <!-- PARENT -->
+            <div class="card hidden" id="parentPanel">
+                <h2>👨‍👩‍👧 Parent Dashboard</h2>
+                <p>Welcome parent!</p>
+
+                <div class="upload-section">
+                    <h3>Upload a new book</h3>
+                    <input type="file" id="bookFile">
+                    <input type="text" id="bookSubject" placeholder="Subject (e.g., Math, Science)">
+                    <button id="uploadBtn">Upload Book</button>
+                </div>
+
+                <div id="booksListParent"></div>
+                <button id="logoutBtnParent">Logout</button>
+            </div>
+
+        </div>
+
+        <footer>💙 Made with love for learning</footer>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script type="module" src="main.js"></script>
+</body>
+</html>
